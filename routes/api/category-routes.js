@@ -20,14 +20,19 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   // find one category by its `id` value
+  
   Category.findByPk(req.params.id, {
-    include: [{model: Product}]
+    include: [
+      {model: Product}
+    ]
+
   }).then((category) => res.json (category))
   // be sure to include its associated Products
 });
 
+// create a new category
 router.post('/', (req, res) => {
-  // create a new category
+  
   Category.create({
     category_name: req.body.category_name,
   }).then((newCategory) => {
