@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
+
 // The `/api/products` endpoint
 
 // get all products
@@ -64,18 +65,17 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/:id', (req, res) => {
 // update product - update product data
+router.put('/:id', (req, res) => {
   Product.update(req.body, {
     where: {
       id: req.params.id,
     },
-  })
-    .then((product) => {
+  }).then((updatedProduct) => {
       // find all associated tags from ProductTag
       return ProductTag.findAll({ where: { product_id: req.params.id } });
-    })
-    .then((productTags) => {
+    
+    }).then((productTags) => {
       // get list of current tag_ids
       const productTagIds = productTags.map(({ tag_id }) => tag_id);
       // create filtered list of new tag_ids
@@ -97,8 +97,8 @@ router.put('/:id', (req, res) => {
         ProductTag.destroy({ where: { id: productTagsToRemove } }),
         ProductTag.bulkCreate(newProductTags),
       ]);
-    })
-    .then((updatedProductTags) => res.json(updatedProductTags))
+    
+    }).then((updatedProductTags) => res.json(updatedProductTags))
     .catch((err) => {
       // console.log(err);
       res.status(400).json(err);
